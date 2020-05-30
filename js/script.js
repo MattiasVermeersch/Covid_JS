@@ -37,6 +37,10 @@ function AddEvents() {
     slcCountry.addEventListener('change', LoadCovidInfo);
 }
 
+function ResetUI() {
+    divCountryData.innerHTML = "";
+}
+
 /**
  * fill slc menu 
  */
@@ -71,6 +75,7 @@ function ChangeSelectMenu() {
 
 
 function LoadCovidInfo() {
+    ResetUI();
     FillParagraphInfo();
     FillTableInfo();
 }
@@ -84,8 +89,42 @@ function FillParagraphInfo() {
     let info = data.Countries[countryIndex];
     let date = new Date(info.Date);
     date = `${date.getDate()} - ${date.getMonth()} - ${date.getFullYear()}`
-    let content = `${info.Country}: Situation on ${date}`;
+    let content = `${info.Country}: Situation on ${date} <br>`;
     paragraph.innerHTML = content;
     divCountryData.append(paragraph);
+}
+
+
+function FillTableInfo() {
+    //get the info
+    let index = slcCountry.selectedIndex;
+    let info = data.Countries[index];
+
+    let newTable = document.createElement('table');
+    newTable.setAttribute('class', 'infoTable');
+
+    //create header of the table: static
+    let header = "<tr>";
+    header += "<th>New Confirmed</th>";
+    header += "<th>New deaths</th>";
+    header += "<th>Total confirmed</th>";
+    header += "<th>Total deaths</th>";
+    header += "<th>New recovered</th>";
+    header += "<th>Total recovered</th>";
+    header += "</tr>";
+
+    //create row with info from data
+    let row = "<tr>";
+    row += `<td>${info.NewConfirmed}</td>`;
+    row += `<td>${info.NewDeaths}</td>`;
+    row += `<td>${info.TotalConfirmed}</td>`;
+    row += `<td>${info.TotalDeaths}</td>`;
+    row += `<td>${info.NewRecovered}</td>`;
+    row += `<td>${info.TotalRecovered}</td>`;
+    row += "</tr>";
+
+    newTable.innerHTML = header + row;
+
+    divCountryData.append(newTable);
 }
 
