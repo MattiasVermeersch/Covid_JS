@@ -10,13 +10,10 @@ window.addEventListener('load',Initialize);
 function Initialize()
 {
     data = JSON.parse(data);
-    console.log(data.Countries);
-    //covid file: variable = data
-    //two layers => Global (), Countries (Array)
-
     BindHtml();
     FillSelectMenu();
     FillImages();
+    AddEvents();
 }
 
 /**
@@ -33,7 +30,11 @@ function BindHtml() {
  * add events to images and select menu
  */
 function AddEvents() {
-    images = document.querySelectorAll("img");
+    let flagImages = document.querySelectorAll("img");
+    flagImages.forEach(flag => {
+        flag.addEventListener('click', ChangeSelectMenu);
+    });
+    slcCountry.addEventListener('change', LoadCovidInfo);
 }
 
 /**
@@ -46,10 +47,12 @@ function FillSelectMenu() {
         );
     }
 }
-
+/**
+ * fills html with country flags
+ */
 function FillImages() {
     tblImages = document.createElement("table");
-    tblImages.setAttribute('class', '');
+    tblImages.setAttribute('class', 'flagTable');
     let tableRow = "<tr>";
     for(let index in data.Countries){
         let path = `img/countries/${data.Countries[index].CountryCode}.png`;
@@ -61,6 +64,28 @@ function FillImages() {
 }
 
 
+function ChangeSelectMenu() {
+    slcCountry.selectedIndex = this.id;
+    LoadCovidInfo();
+}
 
 
+function LoadCovidInfo() {
+    FillParagraphInfo();
+    FillTableInfo();
+}
+
+/**
+ * create a paragraph with date info
+ */
+function FillParagraphInfo() {
+    let paragraph = document.createElement('h1');
+    let countryIndex = slcCountry.selectedIndex;
+    let info = data.Countries[countryIndex];
+    let date = new Date(info.Date);
+    date = `${date.getDate()} - ${date.getMonth()} - ${date.getFullYear()}`
+    let content = `${info.Country}: Situation on ${date}`;
+    paragraph.innerHTML = content;
+    divCountryData.append(paragraph);
+}
 

@@ -74,3 +74,9 @@ select {
 .floatrechts{
   float: right;
 }
+
+/* Table */
+.flagTable td img{
+  border: 1px solid black;
+  border-radius: 25px;
+}
