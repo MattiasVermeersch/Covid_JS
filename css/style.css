@@ -14,10 +14,28 @@
   --black: #000000;
 }
 
+html::after{
+  content: "";
+  background: url("../img/covid.jpg");
+  background-repeat: no-repeat;
+  background-size: auto;
+  background-position: center;
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;  
+}
+
 body {
   font-family: 'Open Sans', sans-serif;
   background-color: var(--white);
   color: var(--black);
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -76,19 +94,31 @@ select {
 }
 
 /* Table */
+.flagTable td {
+  padding: 10px;
+}
+
 .flagTable td img {
-  border: 1px solid black;
+  border: 5px solid;
   border-radius: 25px;
   border-style: outset;
 }
 
+.flagTable td img:hover {
+  border: 5px solid;
+  border-style: inset;
+}
+
 .infoTable {
+  width: 80%;
   border-collapse: collapse;
+  border-style: ridge;
 }
 
 .infoTable th {
   border: 1px solid black;
-  background-color: var(--pink);
+  background-color: var(--blue);
+  color: darkblue;
   padding: 10px;
 }
 

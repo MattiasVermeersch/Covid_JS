@@ -7,6 +7,8 @@ var tblImages;
 //wait for document load
 window.addEventListener('load',Initialize);
 
+//misschien in de lijst optie toevoegen 'Alle landen'
+
 function Initialize()
 {
     data = JSON.parse(data);
@@ -45,11 +47,14 @@ function ResetUI() {
  * fill slc menu 
  */
 function FillSelectMenu() {
+    let counter = 1;
     for(let index in data.Countries){
         slcCountry.options.add(
             new Option(data.Countries[index].Country, index)
         );
+        counter ++;
     }
+    slcCountry.options.add(new Option('Alle landen', counter));
 }
 /**
  * fills html with country flags
@@ -67,13 +72,17 @@ function FillImages() {
     divCountriesImages.append(tblImages);
 }
 
-
+/**
+ * changes selected item when country flag is clicked
+ */
 function ChangeSelectMenu() {
     slcCountry.selectedIndex = this.id;
     LoadCovidInfo();
 }
 
-
+/**
+ * loads covid info from data
+ */
 function LoadCovidInfo() {
     ResetUI();
     FillParagraphInfo();
@@ -86,42 +95,90 @@ function LoadCovidInfo() {
 function FillParagraphInfo() {
     let paragraph = document.createElement('h1');
     let countryIndex = slcCountry.selectedIndex;
-    let info = data.Countries[countryIndex];
-    let date = new Date(info.Date);
-    date = `${date.getDate()} - ${date.getMonth()} - ${date.getFullYear()}`
-    let content = `${info.Country}: Situation on ${date} <br>`;
+    let info, content, date;
+
+    if(countryIndex == (slcCountry.length - 1)) {
+        info = data.Countries[0];
+        date = new Date(info.Date);
+        date = `${date.getDate()} - ${date.getMonth()} - ${date.getFullYear()}`
+        content = `All countries: Situation on ${date} <br>`;
+    }
+    else {
+        info = data.Countries[countryIndex];
+        date = new Date(info.Date);
+        date = `${date.getDate()} - ${date.getMonth()} - ${date.getFullYear()}`
+        content = `${info.Country}: Situation on ${date} <br>`;
+    }
+    
     paragraph.innerHTML = content;
     divCountryData.append(paragraph);
 }
 
-
+/**
+ * creates table with info of clicked country
+ */
 function FillTableInfo() {
     //get the info
-    let index = slcCountry.selectedIndex;
-    let info = data.Countries[index];
+    let header = "";
+    let row = "";
 
     let newTable = document.createElement('table');
     newTable.setAttribute('class', 'infoTable');
 
-    //create header of the table: static
-    let header = "<tr>";
-    header += "<th>New Confirmed</th>";
-    header += "<th>New deaths</th>";
-    header += "<th>Total confirmed</th>";
-    header += "<th>Total deaths</th>";
-    header += "<th>New recovered</th>";
-    header += "<th>Total recovered</th>";
-    header += "</tr>";
-
     //create row with info from data
-    let row = "<tr>";
-    row += `<td>${info.NewConfirmed}</td>`;
-    row += `<td>${info.NewDeaths}</td>`;
-    row += `<td>${info.TotalConfirmed}</td>`;
-    row += `<td>${info.TotalDeaths}</td>`;
-    row += `<td>${info.NewRecovered}</td>`;
-    row += `<td>${info.TotalRecovered}</td>`;
-    row += "</tr>";
+    let info;
+    if(slcCountry.selectedIndex == (slcCountry.length - 1)) {
+        //create header of the table: static
+        header += "<tr>";
+        header += "<th>Country</th>";
+        header += "<th>New Confirmed</th>";
+        header += "<th>New deaths</th>";
+        header += "<th>Total confirmed</th>";
+        header += "<th>Total deaths</th>";
+        header += "<th>New recovered</th>";
+        header += "<th>Total recovered</th>";
+        header += "</tr>";
+
+        for(let i = 0; i < slcCountry.length-1; i++) {
+            info = data.Countries[i];
+            console.log(data.Countries[i]);
+
+            row += "<tr>";
+            row += `<td>${info.Country}</td>`;
+            row += `<td>${info.NewConfirmed}</td>`;
+            row += `<td>${info.NewDeaths}</td>`;
+            row += `<td>${info.TotalConfirmed}</td>`;
+            row += `<td>${info.TotalDeaths}</td>`;
+            row += `<td>${info.NewRecovered}</td>`;
+            row += `<td>${info.TotalRecovered}</td>`;
+            row += "</tr>";
+        }
+    }
+
+    else {
+        //create header of the table: static
+        header += "<tr>";
+        header += "<th>New Confirmed</th>";
+        header += "<th>New deaths</th>";
+        header += "<th>Total confirmed</th>";
+        header += "<th>Total deaths</th>";
+        header += "<th>New recovered</th>";
+        header += "<th>Total recovered</th>";
+        header += "</tr>";
+
+        let index = slcCountry.selectedIndex;
+        info = data.Countries[index];
+
+        row += "<tr>";
+        row += `<td>${info.NewConfirmed}</td>`;
+        row += `<td>${info.NewDeaths}</td>`;
+        row += `<td>${info.TotalConfirmed}</td>`;
+        row += `<td>${info.TotalDeaths}</td>`;
+        row += `<td>${info.NewRecovered}</td>`;
+        row += `<td>${info.TotalRecovered}</td>`;
+        row += "</tr>";
+    }
+    
 
     newTable.innerHTML = header + row;
 
